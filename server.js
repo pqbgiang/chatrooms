@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
-var mime = require('mime');
+var mime = require('mime-types');
 
 var cache = {};
 
@@ -40,3 +40,20 @@ function serveStatic(response, cache, absPath) {
         }); 
     }
 }
+
+var server = http.createServer(function(request, response){
+    var filePath = false;
+    console.log("request url=" + request.url);
+    if(request.url == '/') {
+        filePath = 'public/index.html';
+    } else {
+        filePath = 'public' + request.url;
+    }
+
+    var absPath = './' + filePath;
+    serveStatic(response, cache, absPath);
+});
+
+server.listen(3000, function() {
+    console.log('Server is running on port 3000!');
+});
